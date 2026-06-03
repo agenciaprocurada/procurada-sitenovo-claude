@@ -25,7 +25,7 @@
       </ul>
     </nav>
     <div class="nav__cta">
-      <a href="#contato" class="btn btn-primary">
+      <a href="#contato" class="btn btn-primary" data-contact-open>
         Entre em Contato
         <span class="arrow" aria-hidden="true">→</span>
       </a>
@@ -56,7 +56,7 @@
         digital de performance. Tecnologia, design e estratégia para marcas que não passam despercebidas.
       </p>
       <div class="hero__actions" data-hero="actions">
-        <a href="#contato" class="btn btn-primary">Entre em Contato <span class="arrow" aria-hidden="true">→</span></a>
+        <a href="#contato" class="btn btn-primary" data-contact-open>Entre em Contato <span class="arrow" aria-hidden="true">→</span></a>
         <a href="#servicos" class="btn btn-ghost">Ver o que fazemos</a>
       </div>
     </div>
@@ -237,7 +237,7 @@
       <h2 style="margin-top:18px;">Pronto para ser a marca <span class="text-grad">procurada</span>?</h2>
       <p>Conte o seu desafio. Em poucos dias devolvemos um plano com escopo, prazo e o caminho até o resultado.</p>
       <div class="hero__actions">
-        <a href="mailto:contato@procurada.com.br" class="btn btn-primary">Entre em Contato <span class="arrow" aria-hidden="true">→</span></a>
+        <a href="mailto:contato@procurada.com.br" class="btn btn-primary" data-contact-open>Entre em Contato <span class="arrow" aria-hidden="true">→</span></a>
         <a href="#topo" class="btn btn-ghost">Voltar ao topo</a>
       </div>
     </div>
@@ -285,9 +285,57 @@
     </div>
   </footer>
 
+  <!-- ===================== MODAL DE CONTATO ===================== -->
+  <div class="modal" id="contact-modal" hidden>
+    <div class="modal__overlay" data-contact-close></div>
+    <div class="modal__panel" role="dialog" aria-modal="true" aria-labelledby="contact-title" aria-describedby="contact-desc">
+      <button class="modal__close" type="button" aria-label="Fechar" data-contact-close>&times;</button>
+
+      <span class="eyebrow">Vamos conversar</span>
+      <h2 id="contact-title" class="modal__title">Conte pra gente o seu <span class="text-grad">desafio</span>.</h2>
+      <p id="contact-desc" class="modal__desc">Deixe seus dados e os serviços de interesse. Retornamos pelo WhatsApp em pouco tempo.</p>
+
+      <form class="contact-form" id="contact-form" novalidate>
+        <div class="field">
+          <label for="cf-nome">Nome</label>
+          <input type="text" id="cf-nome" name="nome" autocomplete="name" placeholder="Seu nome completo" required />
+          <span class="field__error" data-error-for="nome">Informe seu nome.</span>
+        </div>
+
+        <div class="field">
+          <label for="cf-whatsapp">Telefone WhatsApp</label>
+          <input type="tel" id="cf-whatsapp" name="whatsapp" inputmode="numeric" autocomplete="tel"
+                 placeholder="(00) 00000-0000" maxlength="16" required />
+          <span class="field__error" data-error-for="whatsapp">Informe um WhatsApp válido (DDD + número).</span>
+        </div>
+
+        <fieldset class="field field--services">
+          <legend>Serviços de interesse</legend>
+          <div class="chips">
+            <label class="chip"><input type="checkbox" name="servicos" value="Sites & Institucionais" /><span>Sites &amp; Institucionais</span></label>
+            <label class="chip"><input type="checkbox" name="servicos" value="Portais & Plataformas" /><span>Portais &amp; Plataformas</span></label>
+            <label class="chip"><input type="checkbox" name="servicos" value="Lojas Virtuais" /><span>Lojas Virtuais</span></label>
+            <label class="chip"><input type="checkbox" name="servicos" value="Sistemas Web" /><span>Sistemas Web</span></label>
+            <label class="chip"><input type="checkbox" name="servicos" value="Marketing de Performance" /><span>Marketing de Performance</span></label>
+            <label class="chip"><input type="checkbox" name="servicos" value="Estratégia & IA" /><span>Estratégia &amp; IA</span></label>
+          </div>
+          <span class="field__error" data-error-for="servicos">Selecione ao menos um serviço.</span>
+        </fieldset>
+
+        <button type="submit" class="btn btn-primary modal__submit">
+          <span class="modal__submit-label">Enviar contato</span>
+          <span class="arrow" aria-hidden="true">→</span>
+        </button>
+
+        <p class="modal__status" data-status hidden></p>
+      </form>
+    </div>
+  </div>
+
   <!-- GSAP -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
   <script src="main.js"></script>
+  <script src="contact.js"></script>
 </body>
 </html>
