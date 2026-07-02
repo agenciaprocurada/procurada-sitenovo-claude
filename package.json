@@ -1,0 +1,10 @@
+{
+  "name": "procurada-site",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Landing page Procurada — Agência Digital",
+  "dependencies": {
+    "resend": "^4.0.0"
+  }
+}

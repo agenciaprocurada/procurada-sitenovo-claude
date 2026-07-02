@@ -2,3 +2,9 @@
 .DS_Store
 Thumbs.db
 node_modules/
+
+# Segredos — NUNCA comitar
+.env
+.env.local
+.env.*.local
+.vercel

@@ -1,13 +1,15 @@
 /* ===========================================================
    PROCURADA — Modal de contato
    Abre via [data-contact-open], mascara o WhatsApp no input
-   e envia apenas dígitos para o webhook (n8n).
+   e envia apenas dígitos para a função serverless (Resend + n8n).
    =========================================================== */
 (function () {
   "use strict";
 
-  const WEBHOOK_URL =
-    "https://n8n-n8n.uzj3vo.easypanel.host/webhook/procurada-contatos";
+  // Endpoint serverless (Vercel). Relativo = mesmo domínio do site.
+  // Se o site ficar em outro host (ex.: GitHub Pages), troque pela URL
+  // absoluta do deploy no Vercel: "https://seu-projeto.vercel.app/api/orcamento".
+  const WEBHOOK_URL = "/api/orcamento";
 
   const modal = document.getElementById("contact-modal");
   const form = document.getElementById("contact-form");
