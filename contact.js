@@ -1,15 +1,16 @@
 /* ===========================================================
    PROCURADA — Modal de contato
    Abre via [data-contact-open], mascara o WhatsApp no input
-   e envia apenas dígitos para a função serverless (Resend + n8n).
+   e envia o lead para a Edge Function do Supabase (fetch puro).
    =========================================================== */
 (function () {
   "use strict";
 
-  // Endpoint serverless (Vercel). Relativo = mesmo domínio do site.
-  // Se o site ficar em outro host (ex.: GitHub Pages), troque pela URL
-  // absoluta do deploy no Vercel: "https://seu-projeto.vercel.app/api/orcamento".
-  const WEBHOOK_URL = "/api/orcamento";
+  // CRM — Supabase Edge Function. A anon key é pública (pode ficar no site).
+  const CRM_URL =
+    "https://xwjiimhbnancmnzahnrp.supabase.co/functions/v1/leads";
+  const CRM_ANON_KEY =
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh3amlpbWhibmFuY21uemFobnJwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI0NzIxODQsImV4cCI6MjA4ODA0ODE4NH0.sPW8qsTz5_J4Np_2EWblDxtMTKtm7oIIrMw4C3IF_pA";
 
   const modal = document.getElementById("contact-modal");
   const form = document.getElementById("contact-form");
@@ -18,6 +19,7 @@
   const panel = modal.querySelector(".modal__panel");
   const nomeInput = form.elements["nome"];
   const phoneInput = form.elements["cf-whatsapp"] || document.getElementById("cf-whatsapp");
+  const honeypot = form.elements["website"];
   const submitBtn = form.querySelector(".modal__submit");
   const submitLabel = form.querySelector(".modal__submit-label");
   const statusEl = form.querySelector("[data-status]");
@@ -114,24 +116,20 @@
       form.querySelectorAll('input[name="servicos"]:checked')
     ).map((c) => c.value);
 
-    // validação
-    let ok = true;
-    if (!nome) { setError(nomeInput.closest(".field")); ok = false; }
-    if (phoneDigits.length < 10 || phoneDigits.length > 11) {
-      setError(phoneInput.closest(".field")); ok = false;
+    // validação: apenas o nome é obrigatório (contrato do CRM)
+    if (!nome) {
+      setError(nomeInput.closest(".field"));
+      nomeInput.focus();
+      return; // não dispara o fetch
     }
-    if (servicos.length === 0) {
-      setError(form.querySelector(".field--services")); ok = false;
-    }
-    if (!ok) return;
 
-    // payload — telefone apenas com números
+    // payload — contrato da Edge Function (telefone só com dígitos)
     const payload = {
-      nome: nome,
-      whatsapp: phoneDigits,
-      servicos: servicos,
-      origem: "procurada-landing",
-      enviado_em: new Date().toISOString(),
+      name: nome,
+      phone: phoneDigits,
+      services: servicos,
+      message: "",
+      website: honeypot ? honeypot.value : "", // honeypot anti-bot
     };
 
     submitBtn.disabled = true;
@@ -139,14 +137,24 @@
     submitLabel.textContent = "Enviando...";
 
     try {
-      const res = await fetch(WEBHOOK_URL, {
+      const res = await fetch(CRM_URL, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          apikey: CRM_ANON_KEY,
+          Authorization: "Bearer " + CRM_ANON_KEY,
+        },
         body: JSON.stringify(payload),
       });
-      if (!res.ok) throw new Error("HTTP " + res.status);
 
-      setStatus("Recebemos seu contato! Em breve falamos pelo WhatsApp. ✅", "is-ok");
+      // Regra do contrato: se o JSON tiver a chave "error", é falha.
+      let data = {};
+      try { data = await res.json(); } catch { data = {}; }
+      if (!res.ok || (data && data.error)) {
+        throw new Error(data.error || "HTTP " + res.status);
+      }
+
+      setStatus("Contato enviado! Retornamos pelo WhatsApp em breve. ✅", "is-ok");
       form.reset();
       submitLabel.textContent = "Enviado";
       setTimeout(closeModal, 1800);

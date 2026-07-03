@@ -663,3 +663,12 @@ a { color: inherit; text-decoration: none; }
 .modal__status.is-err { color: #ff7a9a; }
 
 body.modal-open { overflow: hidden; }
+
+/* honeypot anti-bot — invisível para humanos, presente no DOM p/ bots */
+.hp-website {
+  position: absolute !important;
+  left: -9999px !important;
+  width: 1px; height: 1px;
+  opacity: 0; overflow: hidden;
+  pointer-events: none;
+}

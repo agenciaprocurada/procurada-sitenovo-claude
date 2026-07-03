@@ -322,6 +322,9 @@
           <span class="field__error" data-error-for="servicos">Selecione ao menos um serviço.</span>
         </fieldset>
 
+        <!-- honeypot anti-bot: humanos nunca preenchem; deve ir vazio -->
+        <input type="text" class="hp-website" name="website" tabindex="-1" autocomplete="off" aria-hidden="true" />
+
         <button type="submit" class="btn btn-primary modal__submit">
           <span class="modal__submit-label">Enviar contato</span>
           <span class="arrow" aria-hidden="true">→</span>
